@@ -1,0 +1,15 @@
+{
+  "name": "electron-mini-explorer",
+  "version": "1.0.0",
+  "description": "A mini file explorer using Electron, HTML, CSS, JS, and IPC with Windows 10 style context menu",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^42.2.0"
+  }
+}
