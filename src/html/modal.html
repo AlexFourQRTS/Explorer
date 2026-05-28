@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loop Modal</title>
+</head>
+<body>
+  <h1 id="title">Загрузка...</h1>
+
+  <script>
+  
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+
+
+    document.getElementById('title').innerText = "Цыкл : " + type;
+    
+   
+  </script>
+</body>
+</html>

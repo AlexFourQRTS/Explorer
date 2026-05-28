@@ -1,7 +1,9 @@
+
+
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  
+
   getHomePath: () => ipcRenderer.invoke('get-home-path'),
 
   getQuickAccess: () => ipcRenderer.invoke('get-quick-access'),
@@ -10,5 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   explorePath: (targetPath) => ipcRenderer.invoke('explore-path', targetPath),
 
-  openInShell: (targetPath) => ipcRenderer.invoke('open-in-shell', targetPath)
+  openInShell: (targetPath) => ipcRenderer.invoke('open-in-shell', targetPath),
+
+  openModal: (type) => ipcRenderer.invoke('open-loop-modal', type)
 });
