@@ -1,6 +1,3 @@
-//render.js - слушает html
-
-// И сами клики
 document.getElementById('btn-for').onclick = ForLoop;
 document.getElementById('btn-while').onclick = WhileLoop;
 document.getElementById('btn-do-while').onclick = DoWhileLoop;
@@ -14,7 +11,6 @@ document.getElementById('btn-fs-read').onclick = FsRead;
 document.getElementById('btn-fs-update').onclick = FsUpdate;
 document.getElementById('btn-fs-delete').onclick = FsDelete;
 
-// Функция переключения вкладок
 function showTopic(topicId) {
   const topics = document.getElementsByClassName('topic');
   for (let i = 0; i < topics.length; i++) {
@@ -26,7 +22,6 @@ function showTopic(topicId) {
   }
 }
 
-// Функции для работы с циклами (открытие модальных окон)
 function ForLoop() {
   window.electronAPI.openModal('for');
 }
@@ -55,19 +50,16 @@ function MapLoop() {
   window.electronAPI.openModal('map');
 }
 
-// Функции для работы с файловой системой (FS)
 async function FsCreate() {
-  const filePath = document.getElementById('file-path').value.trim();
-  if (!filePath) {
-    window.electronAPI.openAlert('Укажите путь к файлу!', 'warning');
-    return;
-  }
-  
   try {
+    const filePath = await window.electronAPI.selectSaveFileDialog();
+    if (!filePath) return;
+    
     const result = await window.electronAPI.writeTextFile(filePath, '');
     if (result.success) {
-      window.electronAPI.openAlert('Файл успешно создан: ' + filePath, 'success');
+      document.getElementById('file-path').value = filePath;
       document.getElementById('file-content').value = '';
+      window.electronAPI.openAlert('Файл успешно создан: ' + filePath, 'success');
     } else {
       window.electronAPI.openAlert('Ошибка при создании файла: ' + result.error, 'error');
     }
@@ -77,10 +69,11 @@ async function FsCreate() {
 }
 
 async function FsRead() {
-  const filePath = document.getElementById('file-path').value.trim();
+  let filePath = document.getElementById('file-path').value.trim();
   if (!filePath) {
-    window.electronAPI.openAlert('Укажите путь к файлу!', 'warning');
-    return;
+    filePath = await window.electronAPI.selectFileDialog();
+    if (!filePath) return;
+    document.getElementById('file-path').value = filePath;
   }
   
   try {
