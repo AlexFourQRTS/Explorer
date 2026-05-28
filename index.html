@@ -10,14 +10,14 @@
 <body>
   <nav id="sidebar">
     <h3>Темы</h3>
-    <button onclick="showTopic('variables')">Переменные</button>
     <button onclick="showTopic('loops')">Циклы</button>
+    <button onclick="showTopic('nodejs')">Node.js</button>
   </nav>
 
   <main id="main">
 
-
-    <section id="variables" class="topic">
+    <!-- Вкладка циклов -->
+    <section id="loops" class="topic">
       <div id="theory">
         <button id="btn-for">for</button>
         <button id="btn-while">while</button>
@@ -29,6 +29,25 @@
       </div>
     </section>
 
+    <!-- Вкладка работы с файлами -->
+    <section id="nodejs" class="topic" style="display: none;">
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Путь к файлу:</label>
+        <input type="text" id="file-path" value="note.txt" style="width: 100%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
+
+      <div class="btn-group" style="margin-bottom: 15px;">
+        <button id="btn-fs-create">fs create</button>
+        <button id="btn-fs-read">fs read</button>
+        <button id="btn-fs-update">fs update</button>
+        <button id="btn-fs-delete">fs delete</button>
+      </div>
+
+      <div class="form-group">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Текстовое поле (переменные):</label>
+        <textarea id="file-content" rows="12" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Courier New', Courier, monospace;" placeholder="Здесь будет отображаться содержимое файла..."></textarea>
+      </div>
+    </section>
 
   </main>
 

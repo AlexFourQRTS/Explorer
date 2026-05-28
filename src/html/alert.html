@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сообщение</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .container {
+      text-align: center;
+      width: 100%;
+    }
+    .icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    .message {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 20px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    button {
+      padding: 8px 30px;
+      background-color: #2c3e50;
+      color: white;
+      border: 1px solid #34495e;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #34495e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div id="icon" class="icon">🔔</div>
+    <div id="message" class="message">Сообщение</div>
+    <button onclick="window.electronAPI.closeWindow()">OK</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const message = params.get('message') || 'Сообщение';
+    const type = params.get('type') || 'info';
+
+    // Подставляем иконку в зависимости от типа
+    const icons = {
+      'success': '✅',
+      'error': '❌',
+      'warning': '⚠️',
+      'info': '🔔'
+    };
+
+    document.getElementById('message').innerText = message;
+    document.getElementById('icon').innerText = icons[type] || icons.info;
+  </script>
+</body>
+</html>

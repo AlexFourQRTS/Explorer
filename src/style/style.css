@@ -41,3 +41,37 @@ body {
   margin: 20px 0;
   font-family: 'Courier New', Courier, monospace;
 }
+
+/* Простые стили для работы с файлами, соответствующие общему стилю */
+.topic {
+  width: 100%;
+}
+
+input[type="text"] {
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+textarea {
+  outline: none;
+  font-size: 14px;
+  resize: vertical;
+}
+
+/* Кнопки файловых операций в стиле сайдбара */
+#nodejs button {
+  padding: 8px 15px;
+  background-color: #2c3e50;
+  color: white;
+  border: 1px solid #34495e;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 8px;
+  transition: background-color 0.2s;
+}
+
+#nodejs button:hover {
+  background-color: #34495e;
+}
