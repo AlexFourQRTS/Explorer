@@ -2,20 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Loop Modal</title>
+  <title>Loop Info</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; color: #333; }
+    h1 { margin-top: 0; }
+    pre { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: monospace; }
+    .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .stat-item { background: #f0f0f0; padding: 10px; border-radius: 4px; }
+    .note { margin-top: 20px; font-style: italic; color: #555; }
+  </style>
 </head>
 <body>
+
   <h1 id="title">Загрузка...</h1>
+  <pre id="code"></pre>
+
+  <div class="stats-container">
+    <div class="stat-item"><strong>CPU:</strong> <span id="cpu"></span></div>
+    <div class="stat-item"><strong>RAM:</strong> <span id="mem"></span></div>
+  </div>
+
+  <p class="note" id="note"></p>
 
   <script>
-  
     const params = new URLSearchParams(window.location.search);
     const type = params.get('type');
 
+    const data = {
+      'for':     { code: 'for (let i = 0; i < 100e6; i++) { ... }', cpu: 'Высокая', mem: 'Минимальная', note: 'Максимальная скорость, оптимально для CPU.' },
+      'while':   { code: 'while (i < 100e6) { i++; }', cpu: 'Высокая', mem: 'Минимальная', note: 'Функциональный аналог for.' },
+      'do-while':{ code: 'do { ... } while (i < 100e6);', cpu: 'Высокая', mem: 'Минимальная', note: 'Выполняется хотя бы раз.' },
+      'for-of':  { code: 'for (const item of arr) { ... }', cpu: 'Средняя', mem: 'Минимальная', note: 'Удобно для работы с итерируемыми объектами.' },
+      'for-in':  { code: 'for (const key in obj) { ... }', cpu: 'Низкая', mem: 'Минимальная', note: 'Очень медленно, не рекомендуется для массивов.' },
+      'forEach': { code: 'arr.forEach(x => { ... });', cpu: 'Средняя', mem: 'Минимальная', note: 'Нельзя прервать через break.' },
+      'map':     { code: 'arr.map(x => x * 2);', cpu: 'Средняя', mem: 'Высокая (копия)', note: 'Создает новый массив. Опасно при 100млн элементов.' }
+    };
 
-    document.getElementById('title').innerText = "Цыкл : " + type;
-    
-   
+    const entry = data[type] || { code: 'Пример не найден', cpu: '-', mem: '-', note: '-' };
+
+    document.getElementById('title').innerText = "Цикл: " + (type || "Неизвестен");
+    document.getElementById('code').innerText = entry.code;
+    document.getElementById('cpu').innerText = entry.cpu;
+    document.getElementById('mem').innerText = entry.mem;
+    document.getElementById('note').innerText = entry.note;
   </script>
 </body>
 </html>
