@@ -1,7 +1,7 @@
 import SocketWrapper from './SocketWrapper';
 import {ThemeProvider} from '@mui/material/styles';
 import theme from './theme';
-import StreamingInterface from './StreamingInterface';
+import {StreamingInterface} from './StreamingInterface';
 import CssBaseline from '@mui/material/CssBaseline';
 import {createContext, useCallback, useState} from 'react';
 import packageJson from '../package.json';

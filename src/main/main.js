@@ -1,10 +1,15 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, session } = require('electron');
 const path = require('path');
 const {
   startSeamlessServer,
   stopSeamlessServer,
   getSeamlessAppUrl,
 } = require('./utils/backend-process.js');
+const { registerVirtualMicIpc } = require('./utils/virtual-mic-ipc.js');
+
+registerVirtualMicIpc();
+
+app.commandLine.appendSwitch('enable-features', 'AudioOutputDevices');
 
 let mainWindow;
 
@@ -37,6 +42,16 @@ async function createWindow() {
 }
 
 app.whenReady().then(() => {
+  session.defaultSession.setPermissionRequestHandler(
+    (_webContents, permission, callback) => {
+      callback(
+        permission === 'media' ||
+          permission === 'audio' ||
+          permission === 'microphone',
+      );
+    },
+  );
+
   createWindow();
 
   app.on('activate', function () {

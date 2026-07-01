@@ -8,6 +8,7 @@ type AddAudioToBufferFunction = (
 export type BufferedSpeechPlayer = {
   addAudioToBuffer: AddAudioToBufferFunction;
   setGain: (gain: number) => void;
+  setOutputDevice: (deviceId: string) => Promise<void>;
   start: () => void;
   stop: () => void;
 };
@@ -15,13 +16,19 @@ export type BufferedSpeechPlayer = {
 type Options = {
   onEnded?: () => void;
   onStarted?: () => void;
+  outputDeviceId?: string;
+};
+
+type AudioContextWithSink = AudioContext & {
+  setSinkId?: (sinkId: string) => Promise<void>;
 };
 
 export default function createBufferedSpeechPlayer({
   onStarted,
   onEnded,
+  outputDeviceId = 'default',
 }: Options): BufferedSpeechPlayer {
-  const audioContext = new AudioContext();
+  const audioContext = new AudioContext() as AudioContextWithSink;
   const gainNode = audioContext.createGain();
   gainNode.connect(audioContext.destination);
 
@@ -33,6 +40,22 @@ export default function createBufferedSpeechPlayer({
 
   // This means that the player starts in the 'stopped' state, and you need to call player.start() for it to start playing
   let shouldPlayWhenAudioAvailable = false;
+
+  const setOutputDevice = async (deviceId: string) => {
+    if (audioContext.setSinkId == null) {
+      console.warn('[BufferedSpeechPlayer] setSinkId is not supported in this browser');
+      return;
+    }
+
+    try {
+      await audioContext.setSinkId(deviceId === 'default' ? '' : deviceId);
+      console.debug(`[BufferedSpeechPlayer] Output device set to ${deviceId}`);
+    } catch (error) {
+      console.error('[BufferedSpeechPlayer] Failed to set output device', error);
+    }
+  };
+
+  void setOutputDevice(outputDeviceId);
 
   const setGain = (gain: number) => {
     gainNode.gain.setValueAtTime(gain, audioContext.currentTime);
@@ -117,7 +140,7 @@ export default function createBufferedSpeechPlayer({
       debug()?.playedAudio(startTime, endTime, buffer);
       currentPlayingBufferSource = null;
 
-      // We don't set isPlaying = false here because we are attempting to continue playing. It will get set to false if there are no more buffers to play
+      // We don't set isPlaying = false here because we are attempting to continue playing. It will get to false if there are no more buffers to play
       playNextBuffer();
     };
 
@@ -169,5 +192,5 @@ export default function createBufferedSpeechPlayer({
     }
   };
 
-  return {addAudioToBuffer, setGain, stop, start};
+  return {addAudioToBuffer, setGain, setOutputDevice, stop, start};
 }

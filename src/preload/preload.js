@@ -23,5 +23,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     const listener = (_event, payload) => callback(payload);
     ipcRenderer.on('translation-event', listener);
     return () => ipcRenderer.removeListener('translation-event', listener);
-  }
+  },
+  virtualMicCheck: () => ipcRenderer.invoke('virtual-mic-check'),
+  virtualMicInstall: () => ipcRenderer.invoke('virtual-mic-install'),
 });

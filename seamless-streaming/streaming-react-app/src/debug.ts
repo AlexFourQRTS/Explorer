@@ -1,4 +1,4 @@
-import {TYPING_ANIMATION_DELAY_MS} from './StreamingInterface';
+import {TYPING_ANIMATION_DELAY_MS} from './streaming/streamingInterfaceConstants';
 import {getURLParams} from './URLParams';
 import audioBuffertoWav from 'audiobuffer-to-wav';
 import './StreamingInterface.css';

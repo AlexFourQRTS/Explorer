@@ -6,6 +6,7 @@
   "scripts": {
     "start": "electron .",
     "setup:seamless": "bash scripts/setup-seamless.sh",
+    "install:blackhole": "bash scripts/install-blackhole.sh",
     "dev": "NODE_ENV=development electron .",
     "build": "electron-builder"
   },

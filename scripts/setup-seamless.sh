@@ -89,3 +89,5 @@ fi
 echo ""
 echo "Setup complete (conda env: $CONDA_ENV_NAME)."
 echo "  npm run start"
+echo ""
+echo "Virtual mic (Zoom): install BlackHole → Translation output → BlackHole in app, BlackHole as mic in Zoom."
