@@ -1,28 +1,39 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const registerIPC = require('./utils/ipc.js');
+const {
+  startSeamlessServer,
+  stopSeamlessServer,
+  getSeamlessAppUrl,
+} = require('./utils/backend-process.js');
 
 let mainWindow;
 
-function createWindow() {
+async function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    minWidth: 800,
-    minHeight: 600,
+    width: 1100,
+    height: 800,
+    minWidth: 900,
+    minHeight: 700,
     webPreferences: {
       preload: path.resolve('./src/preload/preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
     },
-    title: "Mini Explorer",
-    icon: path.join(__dirname, 'icon.png')
+    title: 'STREEM',
+    icon: path.join(__dirname, 'icon.png'),
   });
 
   mainWindow.setMenuBarVisibility(false);
-  mainWindow.loadFile('index.html');
 
-  registerIPC(mainWindow);
+  try {
+    await startSeamlessServer();
+    await mainWindow.loadURL(getSeamlessAppUrl());
+  } catch (error) {
+    await mainWindow.loadFile('src/html/setup-error.html');
+    mainWindow.webContents.executeJavaScript(
+      `document.getElementById('error-message').textContent = ${JSON.stringify(error.message)};`
+    );
+  }
 }
 
 app.whenReady().then(() => {
@@ -34,5 +45,10 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', function () {
+  stopSeamlessServer();
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('before-quit', () => {
+  stopSeamlessServer();
 });

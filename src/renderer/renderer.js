@@ -22,6 +22,12 @@ function showTopic(topicId) {
   }
 }
 
+document.addEventListener('DOMContentLoaded', async () => {
+  const userLanguage = navigator.language.startsWith('ru') ? 'ru' : 'en';
+  await window.streemI18n.loadLocale(userLanguage);
+  window.streemTranslation.initTranslationPanel();
+});
+
 function ForLoop() {
   window.electronAPI.openModal('for');
 }

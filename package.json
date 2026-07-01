@@ -1,10 +1,11 @@
 {
   "name": "notes-app",
   "version": "1.0.0",
-  "description": "Приложение для заметок с паролями",
+  "description": "STREEM — offline live speech translation (SeamlessStreaming)",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
+    "setup:seamless": "bash scripts/setup-seamless.sh",
     "dev": "NODE_ENV=development electron .",
     "build": "electron-builder"
   },
@@ -26,7 +27,7 @@
   },
   "build": {
     "appId": "com.notes.app",
-    "productName": "Notes App",
+    "productName": "STREEM",
     "asar": false,
     "directories": {
       "output": "dist"
@@ -62,6 +63,7 @@
     }
   },
   "dependencies": {
+    "ws": "^8.21.0",
     "xlsx": "^0.18.5"
   }
 }

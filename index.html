@@ -3,20 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Deep Learning</title>
+  <title>STREEM</title>
   <link rel="stylesheet" href="./src/style/style.css">
 </head>
 
 <body>
   <nav id="sidebar">
-    <h3>Темы</h3>
-    <button onclick="showTopic('loops')">Циклы</button>
-    <button onclick="showTopic('nodejs')">Node.js</button>
+    <h3 data-i18n="sidebar.topics">Topics</h3>
+    <button onclick="showTopic('loops')" data-i18n="sidebar.loops">Loops</button>
+    <button onclick="showTopic('nodejs')" data-i18n="sidebar.nodejs">Node.js</button>
+    <button onclick="showTopic('translation')" data-i18n="sidebar.translation">Translation</button>
   </nav>
 
   <main id="main">
 
-    <!-- Вкладка циклов -->
+    <!-- Loops tab -->
     <section id="loops" class="topic">
       <div id="theory">
         <button id="btn-for">for</button>
@@ -29,7 +30,7 @@
       </div>
     </section>
 
-    <!-- Вкладка работы с файлами -->
+    <!-- Node.js files tab -->
     <section id="nodejs" class="topic" style="display: none;">
       <div class="form-group" style="margin-bottom: 15px;">
         <label style="display: block; margin-bottom: 5px; font-weight: bold;">Путь к файлу:</label>
@@ -49,8 +50,71 @@
       </div>
     </section>
 
+    <!-- Live translation tab -->
+    <section id="translation" class="topic" style="display: none;">
+      <h2 data-i18n="translation.title">Live Translation</h2>
+
+      <div class="translation-grid">
+        <label>
+          <span data-i18n="translation.source_lang">I speak</span>
+          <select id="translation-source-lang">
+            <option value="ru" data-i18n="translation.lang_ru">Russian</option>
+            <option value="uk" data-i18n="translation.lang_uk">Ukrainian</option>
+            <option value="en" data-i18n="translation.lang_en">English</option>
+          </select>
+        </label>
+
+        <label>
+          <span data-i18n="translation.target_lang">Partner hears</span>
+          <select id="translation-target-lang">
+            <option value="uk" data-i18n="translation.lang_uk">Ukrainian</option>
+            <option value="en" data-i18n="translation.lang_en">English</option>
+            <option value="ru" data-i18n="translation.lang_ru">Russian</option>
+          </select>
+        </label>
+
+        <label>
+          <span data-i18n="translation.input_device">Microphone</span>
+          <select id="translation-input-device"></select>
+        </label>
+
+        <label>
+          <span data-i18n="translation.output_device">Output</span>
+          <select id="translation-output-device"></select>
+        </label>
+      </div>
+
+      <div class="translation-actions">
+        <button id="translation-prepare-btn" data-i18n="translation.prepare">Load models</button>
+        <button id="translation-start-btn" data-i18n="translation.start">Start</button>
+        <button id="translation-stop-btn" data-i18n="translation.stop">Stop</button>
+      </div>
+
+      <p class="translation-status">
+        <strong data-i18n="translation.status">Status</strong>:
+        <span id="translation-status-value" data-i18n="translation.status_idle">Idle</span>
+      </p>
+
+      <div class="translation-panels">
+        <div class="translation-panel">
+          <h3 data-i18n="translation.transcript">Recognized</h3>
+          <p id="translation-transcript" class="translation-text" data-i18n="translation.placeholder_transcript">
+            Speech will appear here...
+          </p>
+        </div>
+        <div class="translation-panel">
+          <h3 data-i18n="translation.translated">Translation</h3>
+          <p id="translation-output" class="translation-text" data-i18n="translation.placeholder_translated">
+            Translation will appear here...
+          </p>
+        </div>
+      </div>
+    </section>
+
   </main>
 
+  <script src="./src/renderer/i18n.js"></script>
+  <script src="./src/renderer/translation.js"></script>
   <script src="./src/renderer/renderer.js"></script>
 </body>
 

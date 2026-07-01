@@ -13,5 +13,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteFile: (filePath) => ipcRenderer.invoke('delete-file', filePath),
   openAlert: (message, type) => ipcRenderer.invoke('open-alert-modal', message, type),
   closeWindow: () => ipcRenderer.invoke('close-window'),
-  selectSaveFileDialog: () => ipcRenderer.invoke('select-save-file-dialog')
+  selectSaveFileDialog: () => ipcRenderer.invoke('select-save-file-dialog'),
+  translationPrepare: () => ipcRenderer.invoke('translation-prepare'),
+  translationListDevices: () => ipcRenderer.invoke('translation-list-devices'),
+  translationStart: (config) => ipcRenderer.invoke('translation-start', config),
+  translationStop: () => ipcRenderer.invoke('translation-stop'),
+  translationShutdown: () => ipcRenderer.invoke('translation-shutdown'),
+  onTranslationEvent: (callback) => {
+    const listener = (_event, payload) => callback(payload);
+    ipcRenderer.on('translation-event', listener);
+    return () => ipcRenderer.removeListener('translation-event', listener);
+  }
 });

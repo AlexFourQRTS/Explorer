@@ -1,0 +1,3 @@
+name: seamless_streaming_monotonic_decoder@streem
+base: seamless_streaming_monotonic_decoder
+checkpoint: "file:///Users/brahma/Desktop/STREEM/Model/seamless_streaming_monotonic_decoder.pt"
