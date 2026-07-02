@@ -17,10 +17,12 @@ import {
   StreamingStatus,
 } from './types/StreamingTypes';
 import Alert from '@mui/material/Alert';
+import {ru} from './i18n/ru';
 
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+const ROLE_LABELS: Record<Roles, string> = {
+  speaker: ru.roleSpeaker,
+  listener: ru.roleListener,
+};
 
 type Props = {
   roomState: RoomState | null;
@@ -152,7 +154,7 @@ export default function RoomConfig({
       <Stack direction="row" spacing="12px" sx={{alignItems: 'center'}}>
         <TextField
           size="small"
-          label="Room Code"
+          label="Код комнаты"
           variant="outlined"
           disabled={roomState?.room_id != null}
           value={roomID}
@@ -178,7 +180,7 @@ export default function RoomConfig({
               streamingStatus !== 'stopped'
             }
             onClick={() => onJoinRoom(false)}>
-            {roomState?.room_id != null ? 'Update Roles' : 'Join Room'}
+            {roomState?.room_id != null ? 'Обновить роли' : 'Войти в комнату'}
           </Button>
         </div>
 
@@ -192,7 +194,7 @@ export default function RoomConfig({
                 streamingStatus !== 'stopped'
               }
               onClick={() => onJoinRoom(true)}>
-              {'Create New Room'}
+              {'Создать комнату'}
             </Button>
           </div>
         )}
@@ -215,7 +217,7 @@ export default function RoomConfig({
                   }}
                 />
               }
-              label={capitalize(role)}
+              label={ROLE_LABELS[role as Roles]}
             />
           );
         })}

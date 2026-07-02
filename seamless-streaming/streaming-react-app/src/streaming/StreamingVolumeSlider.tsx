@@ -4,6 +4,7 @@ import VolumeDown from '@mui/icons-material/VolumeDown';
 import VolumeUp from '@mui/icons-material/VolumeUp';
 import {BufferedSpeechPlayer} from '../createBufferedSpeechPlayer';
 import {getGainScaledValue} from './streamingGain';
+import {ru} from '../i18n/ru';
 
 type StreamingVolumeSliderProps = {
   gain: number;
@@ -24,7 +25,7 @@ export function StreamingVolumeSlider({
       alignItems="center">
       <VolumeDown color="primary" />
       <Slider
-        aria-label="Volume"
+        aria-label={ru.volume}
         defaultValue={1}
         scale={getGainScaledValue}
         min={0}

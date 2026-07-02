@@ -1,3 +1,5 @@
+import {INPUT_SOURCE_LABELS, OUTPUT_MODE_LABELS} from '../i18n/streamingLabels';
+
 interface ServerTranslationDataBase {
   eos: boolean;
   event: string;
@@ -34,15 +36,6 @@ export const SUPPORTED_OUTPUT_MODE_VALUES = ['s2s&t', 's2t', 's2s'] as const;
 
 export type SupportedOutputMode = (typeof SUPPORTED_OUTPUT_MODE_VALUES)[number];
 
-export const SUPPORTED_OUTPUT_MODES: Array<{
-  value: (typeof SUPPORTED_OUTPUT_MODE_VALUES)[number];
-  label: string;
-}> = [
-    { value: 's2s&t', label: 'Text & Speech' },
-    { value: 's2t', label: 'Text' },
-    { value: 's2s', label: 'Speech' },
-  ];
-
 export const SUPPORTED_INPUT_SOURCE_VALUES = [
   'userMedia',
   'displayMedia',
@@ -51,13 +44,21 @@ export const SUPPORTED_INPUT_SOURCE_VALUES = [
 export type SupportedInputSource =
   (typeof SUPPORTED_INPUT_SOURCE_VALUES)[number];
 
+export const SUPPORTED_OUTPUT_MODES: Array<{
+  value: (typeof SUPPORTED_OUTPUT_MODE_VALUES)[number];
+  label: string;
+}> = SUPPORTED_OUTPUT_MODE_VALUES.map((value) => ({
+  value,
+  label: OUTPUT_MODE_LABELS[value],
+}));
+
 export const SUPPORTED_INPUT_SOURCES: Array<{
   value: SupportedInputSource;
   label: string;
-}> = [
-  {value: 'userMedia', label: 'Microphone'},
-  {value: 'displayMedia', label: 'Browser Tab (Chrome only)'},
-];
+}> = SUPPORTED_INPUT_SOURCE_VALUES.map((value) => ({
+  value,
+  label: INPUT_SOURCE_LABELS[value],
+}));
 
 export type StartStreamEventConfig = {
   event: 'config';
@@ -72,7 +73,7 @@ export type StartStreamEventConfig = {
 export interface BrowserAudioStreamConfig {
   echoCancellation: boolean;
   noiseSuppression: boolean;
-  echoCancellation: boolean;
+  deviceId?: string;
 }
 
 export interface ServerStateItem {

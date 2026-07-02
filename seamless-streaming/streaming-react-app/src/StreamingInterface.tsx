@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import {
   TranslationSentences,
@@ -18,12 +18,14 @@ import XRDialog from './react-xr/XRDialog';
 import {useStreamingControls} from './streaming/useStreamingControls';
 import {useStreamingSocketListeners} from './streaming/useStreamingSocketListeners';
 import {useVirtualMicDevices} from './streaming/useVirtualMicDevices';
+import {useInputMicrophoneDevices} from './streaming/useInputMicrophoneDevices';
 import {useStreamingInterfaceState} from './streaming/useStreamingInterfaceState';
 import {
   StreamingInterfaceHeader,
   StreamingSpeakerPanel,
 } from './streaming/StreamingInterfaceLayout';
 import {StreamingTranscript} from './streaming/StreamingTranscript';
+import {getGainScaledValue} from './streaming/streamingGain';
 
 export function StreamingInterface() {
   const urlParams = getURLParams();
@@ -54,6 +56,13 @@ export function StreamingInterface() {
   const isListener =
     (clientID != null && state.roomState?.listeners.includes(clientID)) ?? false;
 
+  const inputMic = useInputMicrophoneDevices();
+
+  const virtualMic = useVirtualMicDevices({
+    bufferedSpeechPlayer,
+    inputStream: state.inputStream,
+  });
+
   const streamControls = useStreamingControls({
     socket,
     audioContext,
@@ -61,12 +70,14 @@ export function StreamingInterface() {
     streamingStatus: state.streamingStatus,
     outputMode: state.outputMode,
     inputSource: state.inputSource,
+    inputDeviceId: inputMic.inputDeviceId,
     enableNoiseSuppression: state.enableNoiseSuppression,
     enableEchoCancellation: state.enableEchoCancellation,
     targetLang: state.targetLang,
     enableExpressive: state.enableExpressive,
     serverDebugFlag: state.serverDebugFlag,
     muted: state.muted,
+    translationOutputDeviceId: virtualMic.translationOutputDeviceId,
     bufferedSpeechPlayer,
     inputStream: state.inputStream,
     inputStreamSource: state.inputStreamSource,
@@ -81,10 +92,9 @@ export function StreamingInterface() {
     setAgent: state.setAgent,
   });
 
-  const virtualMic = useVirtualMicDevices({
-    bufferedSpeechPlayer,
-    inputStream: state.inputStream,
-  });
+  useEffect(() => {
+    bufferedSpeechPlayer.setGain(getGainScaledValue(state.gain));
+  }, [bufferedSpeechPlayer, state.gain]);
 
   const translationSentencesBase = getTranslationSentencesFromReceivedData(
     state.receivedData,
@@ -173,13 +183,11 @@ export function StreamingInterface() {
                 targetLang={state.targetLang}
                 outputMode={state.outputMode}
                 enableExpressive={state.enableExpressive}
-                isListener={isListener}
-                gain={state.gain}
                 audioOutputDevices={virtualMic.audioOutputDevices}
                 translationOutputDeviceId={virtualMic.translationOutputDeviceId}
-                blackHoleInstalled={virtualMic.blackHoleInstalled}
-                installingVirtualMic={virtualMic.installingVirtualMic}
                 bufferedSpeechPlayer={bufferedSpeechPlayer}
+                isListener={isListener}
+                gain={state.gain}
                 streamingStatus={state.streamingStatus}
                 roomID={roomID}
                 clientID={clientID}
@@ -187,6 +195,8 @@ export function StreamingInterface() {
                 serverExceptions={state.serverExceptions}
                 hasMaxSpeakers={state.hasMaxSpeakers}
                 inputSource={state.inputSource}
+                audioInputDevices={inputMic.audioInputDevices}
+                inputDeviceId={inputMic.inputDeviceId}
                 enableNoiseSuppression={state.enableNoiseSuppression}
                 enableEchoCancellation={state.enableEchoCancellation}
                 serverDebugFlag={state.serverDebugFlag}
@@ -199,9 +209,9 @@ export function StreamingInterface() {
                 onExpressiveChange={state.setEnableExpressive}
                 onOutputDeviceChange={virtualMic.setTranslationOutputDeviceId}
                 onGainChange={state.setGain}
-                onInstallingVirtualMicChange={virtualMic.setInstallingVirtualMic}
                 onSetDynamicConfig={streamControls.onSetDynamicConfig}
                 onInputSourceChange={state.setInputSource}
+                onInputDeviceChange={inputMic.setInputDeviceId}
                 onNoiseSuppressionChange={state.setEnableNoiseSuppression}
                 onEchoCancellationChange={state.setEnableEchoCancellation}
                 onServerDebugChange={state.setServerDebugFlag}

@@ -1,11 +1,7 @@
-import {useEffect, useRef, useState} from 'react';
-import {
-  AudioOutputOption,
-  findVirtualMicDevice,
-  listAudioOutputDevices,
-} from '../audioOutputDevices';
+import {useEffect, useState} from 'react';
+import {AudioOutputOption, listAudioOutputDevices} from '../audioOutputDevices';
 import {BufferedSpeechPlayer} from '../createBufferedSpeechPlayer';
-import {checkBlackHoleInstalled} from './electronBridge';
+import {ru} from '../i18n/ru';
 
 type UseVirtualMicDevicesParams = {
   bufferedSpeechPlayer: BufferedSpeechPlayer;
@@ -16,9 +12,6 @@ type UseVirtualMicDevicesResult = {
   audioOutputDevices: AudioOutputOption[];
   translationOutputDeviceId: string;
   setTranslationOutputDeviceId: (deviceId: string) => void;
-  blackHoleInstalled: boolean | null;
-  installingVirtualMic: boolean;
-  setInstallingVirtualMic: (installing: boolean) => void;
 };
 
 export function useVirtualMicDevices({
@@ -27,32 +20,14 @@ export function useVirtualMicDevices({
 }: UseVirtualMicDevicesParams): UseVirtualMicDevicesResult {
   const [audioOutputDevices, setAudioOutputDevices] = useState<
     AudioOutputOption[]
-  >([{deviceId: 'default', label: 'System default'}]);
+  >([{deviceId: 'default', label: ru.systemDefault}]);
   const [translationOutputDeviceId, setTranslationOutputDeviceId] =
     useState('default');
-  const [blackHoleInstalled, setBlackHoleInstalled] = useState<boolean | null>(
-    null,
-  );
-  const [installingVirtualMic, setInstallingVirtualMic] = useState(false);
-  const autoSelectVirtualMicRef = useRef(true);
-
-  useEffect(() => {
-    void checkBlackHoleInstalled().then(setBlackHoleInstalled);
-  }, []);
 
   useEffect(() => {
     const loadOutputDevices = async () => {
       const devices = await listAudioOutputDevices();
       setAudioOutputDevices(devices);
-
-      if (!autoSelectVirtualMicRef.current) {
-        return;
-      }
-      const virtualMic = findVirtualMicDevice(devices);
-      if (virtualMic != null) {
-        setTranslationOutputDeviceId(virtualMic.deviceId);
-      }
-      autoSelectVirtualMicRef.current = false;
     };
 
     void loadOutputDevices();
@@ -66,8 +41,5 @@ export function useVirtualMicDevices({
     audioOutputDevices,
     translationOutputDeviceId,
     setTranslationOutputDeviceId,
-    blackHoleInstalled,
-    installingVirtualMic,
-    setInstallingVirtualMic,
   };
 }

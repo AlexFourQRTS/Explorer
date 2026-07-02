@@ -1,4 +1,7 @@
-import {BrowserAudioStreamConfig, StreamingStatus} from '../types/StreamingTypes';
+import {BrowserAudioStreamConfig} from '../types/StreamingTypes';
+import {STREAMING_BUTTON_LABELS} from '../i18n/streamingLabels';
+
+export {STREAMING_BUTTON_LABELS};
 
 export const AUDIO_STREAM_DEFAULTS = {
   userMedia: {
@@ -10,12 +13,6 @@ export const AUDIO_STREAM_DEFAULTS = {
     noiseSuppression: false,
   },
 } as const satisfies Record<string, BrowserAudioStreamConfig>;
-
-export const STREAMING_BUTTON_LABELS: {[key in StreamingStatus]: string} = {
-  stopped: 'Start Streaming',
-  running: 'Stop Streaming',
-  starting: 'Starting...',
-};
 
 export const BUFFER_LIMIT = 1;
 export const SCROLLED_TO_BOTTOM_THRESHOLD_PX = 36;

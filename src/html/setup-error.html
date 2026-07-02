@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>STREEM — Setup</title>
+  <title>STREEM — настройка</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -16,13 +16,13 @@
   </style>
 </head>
 <body>
-  <h1>STREEM backend not ready</h1>
+  <h1>Бэкенд STREEM не готов</h1>
   <p id="error-message"></p>
-  <p>Run from <code>Explorer/</code>:</p>
+  <p>Запустите из папки <code>Explorer/</code>:</p>
   <pre><code>npm run setup:seamless
 npm run start</code></pre>
   <p id="wsl-hint"></p>
-  <p>Place model files in <code>Model/</code>:</p>
+  <p>Положите файлы моделей в <code>Model/</code>:</p>
   <ul>
     <li><code>seamless_streaming_unity.pt</code></li>
     <li><code>seamless_streaming_monotonic_decoder.pt</code></li>
@@ -32,15 +32,15 @@ npm run start</code></pre>
     const wslHint = document.getElementById('wsl-hint');
     if (navigator.userAgent.includes('Windows')) {
       wslHint.innerHTML =
-        'On Windows the Python backend runs in <strong>WSL2</strong> (fairseq2 has no native Windows build). Install Ubuntu if needed: <code>wsl --install -d Ubuntu</code>';
+        'На Windows Python-бэкенд работает в <strong>WSL2</strong> (fairseq2 не собирается под Windows). Установите Ubuntu: <code>wsl --install -d Ubuntu</code>';
     }
     const hint = document.getElementById('virtual-mic-hint');
     if (navigator.userAgent.includes('Windows')) {
       hint.textContent =
-        'Virtual mic (Zoom): install VB-Audio Virtual Cable → CABLE Input as output in STREEM, CABLE Output as mic in Zoom.';
+        'Виртуальный мик (Zoom): установите VB-Audio Virtual Cable → в STREEM выберите CABLE Input, в Zoom — CABLE Output как микрофон.';
     } else {
       hint.textContent =
-        'Virtual mic (Zoom): install BlackHole → pick it as translation output, then as mic in Zoom.';
+        'Виртуальный мик (Zoom): установите BlackHole → выберите его как вывод перевода, затем как мик в Zoom.';
     }
   </script>
 </body>

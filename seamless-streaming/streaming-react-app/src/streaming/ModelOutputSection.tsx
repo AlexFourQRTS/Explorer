@@ -21,6 +21,7 @@ import {AudioOutputOption} from '../audioOutputDevices';
 import {VirtualMicControls} from './VirtualMicControls';
 import {StreamingVolumeSlider} from './StreamingVolumeSlider';
 import {BufferedSpeechPlayer} from '../createBufferedSpeechPlayer';
+import {ru} from '../i18n/ru';
 
 type ModelOutputSectionProps = {
   streamFixedConfigOptionsDisabled: boolean;
@@ -34,8 +35,6 @@ type ModelOutputSectionProps = {
   gain: number;
   audioOutputDevices: AudioOutputOption[];
   translationOutputDeviceId: string;
-  blackHoleInstalled: boolean | null;
-  installingVirtualMic: boolean;
   bufferedSpeechPlayer: BufferedSpeechPlayer;
   onModelChange: (agent: AgentCapabilities | null) => void;
   onTargetLangChange: (lang: string) => void;
@@ -43,7 +42,6 @@ type ModelOutputSectionProps = {
   onExpressiveChange: (expressive: boolean) => void;
   onOutputDeviceChange: (deviceId: string) => void;
   onGainChange: (gain: number) => void;
-  onInstallingVirtualMicChange: (installing: boolean) => void;
   onSetDynamicConfig: (partialConfig: PartialDynamicConfig) => Promise<void>;
 };
 
@@ -59,8 +57,6 @@ export function ModelOutputSection({
   gain,
   audioOutputDevices,
   translationOutputDeviceId,
-  blackHoleInstalled,
-  installingVirtualMic,
   bufferedSpeechPlayer,
   onModelChange,
   onTargetLangChange,
@@ -68,23 +64,22 @@ export function ModelOutputSection({
   onExpressiveChange,
   onOutputDeviceChange,
   onGainChange,
-  onInstallingVirtualMicChange,
   onSetDynamicConfig,
 }: ModelOutputSectionProps) {
   return (
     <>
       <Stack spacing="12px" direction="column">
-        <FormLabel id="model-selector-label">Model</FormLabel>
+        <FormLabel id="model-selector-label">{ru.model}</FormLabel>
         <FormControl
           disabled={
             streamFixedConfigOptionsDisabled || agentsCapabilities.length === 0
           }
           fullWidth
           sx={{minWidth: '14em'}}>
-          <InputLabel id="model-selector-input-label">Model</InputLabel>
+          <InputLabel id="model-selector-input-label">{ru.model}</InputLabel>
           <Select
             labelId="model-selector-input-label"
-            label="Model"
+            label={ru.model}
             onChange={(e: SelectChangeEvent) => {
               const newAgent =
                 agentsCapabilities.find(
@@ -106,16 +101,16 @@ export function ModelOutputSection({
       </Stack>
 
       <Stack spacing={0.5}>
-        <FormLabel id="output-modes-radio-group-label">Output</FormLabel>
+        <FormLabel id="output-modes-radio-group-label">{ru.output}</FormLabel>
 
         <Box sx={{paddingTop: 2, paddingBottom: 1}}>
           <FormControl fullWidth sx={{minWidth: '14em'}}>
             <InputLabel id="target-selector-input-label">
-              Target Language
+              {ru.targetLanguage}
             </InputLabel>
             <Select
               labelId="target-selector-input-label"
-              label="Target Language"
+              label={ru.targetLanguage}
               onChange={(e: SelectChangeEvent) => {
                 onTargetLangChange(e.target.value);
                 void onSetDynamicConfig({targetLanguage: e.target.value});
@@ -138,9 +133,6 @@ export function ModelOutputSection({
           audioOutputDevices={audioOutputDevices}
           translationOutputDeviceId={translationOutputDeviceId}
           onOutputDeviceChange={onOutputDeviceChange}
-          blackHoleInstalled={blackHoleInstalled}
-          installingVirtualMic={installingVirtualMic}
-          onInstallingChange={onInstallingVirtualMicChange}
         />
 
         <Grid container>
@@ -179,7 +171,7 @@ export function ModelOutputSection({
                       }}
                     />
                   }
-                  label="Expressive"
+                  label={ru.expressive}
                 />
               )}
 

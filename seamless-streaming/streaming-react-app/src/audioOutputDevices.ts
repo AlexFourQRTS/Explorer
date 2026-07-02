@@ -1,3 +1,5 @@
+import {ru} from './i18n/ru';
+
 export type AudioOutputOption = {
   deviceId: string;
   label: string;
@@ -5,7 +7,7 @@ export type AudioOutputOption = {
 
 const DEFAULT_OUTPUT: AudioOutputOption = {
   deviceId: 'default',
-  label: 'System default',
+  label: ru.systemDefault,
 };
 
 export async function listAudioOutputDevices(): Promise<AudioOutputOption[]> {
@@ -14,7 +16,7 @@ export async function listAudioOutputDevices(): Promise<AudioOutputOption[]> {
     .filter((device) => device.kind === 'audiooutput')
     .map((device) => ({
       deviceId: device.deviceId,
-      label: device.label || `Output ${device.deviceId.slice(0, 8)}`,
+      label: device.label || ru.outputFallback(device.deviceId),
     }));
 
   if (outputs.length === 0) {
@@ -28,7 +30,9 @@ export function findVirtualMicDevice(
   devices: AudioOutputOption[],
 ): AudioOutputOption | undefined {
   return devices.find((device) =>
-    /blackhole|vb-?audio|cable input|virtual/i.test(device.label),
+    /blackhole|vb-?audio|cable\s*input|virtual\s*cable|cable\s*\(/i.test(
+      device.label,
+    ),
   );
 }
 

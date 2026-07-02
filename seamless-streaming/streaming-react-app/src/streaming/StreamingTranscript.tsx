@@ -5,6 +5,7 @@ import {TranslationSentences} from '../types/StreamingTypes';
 import {RoomState} from '../types/RoomState';
 import Blink from '../Blink';
 import {CURSOR_BLINK_INTERVAL_MS} from '../cursorBlinkInterval';
+import {ru} from '../i18n/ru';
 
 type StreamingTranscriptProps = {
   isSpeaker: boolean;
@@ -30,11 +31,11 @@ export function StreamingTranscript({
         spacing={2}
         sx={{mb: '16px', alignItems: 'center'}}>
         <Typography variant="h1" sx={{fontWeight: 700, flexGrow: 1}}>
-          Transcript
+          {ru.transcript}
         </Typography>
         {isSpeaker && (
           <Button variant="text" size="small" onClick={onClearTranscriptForAll}>
-            Clear Transcript for All
+            {ru.clearTranscript}
           </Button>
         )}
       </Stack>

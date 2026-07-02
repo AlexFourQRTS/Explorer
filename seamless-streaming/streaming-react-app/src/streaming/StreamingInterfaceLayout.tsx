@@ -13,6 +13,8 @@ import {InputStreamSection} from './InputStreamSection';
 import {AgentCapabilities, ServerExceptionData, SupportedInputSource, SupportedOutputMode} from '../types/StreamingTypes';
 import {PartialDynamicConfig} from '../types/StreamingTypes';
 import {AudioOutputOption} from '../audioOutputDevices';
+import {AudioInputOption} from '../audioInputDevices';
+import {ru} from '../i18n/ru';
 
 type StreamingSpeakerPanelProps = {
   streamFixedConfigOptionsDisabled: boolean;
@@ -22,13 +24,10 @@ type StreamingSpeakerPanelProps = {
   targetLang: string | null;
   outputMode: SupportedOutputMode;
   enableExpressive: boolean | null;
-  isListener: boolean;
-  gain: number;
   audioOutputDevices: AudioOutputOption[];
   translationOutputDeviceId: string;
-  blackHoleInstalled: boolean | null;
-  installingVirtualMic: boolean;
   bufferedSpeechPlayer: BufferedSpeechPlayer;
+  gain: number;
   streamingStatus: StreamingStatus;
   roomID: string | null;
   clientID: string | null;
@@ -36,11 +35,14 @@ type StreamingSpeakerPanelProps = {
   serverExceptions: Array<ServerExceptionData>;
   hasMaxSpeakers: boolean;
   inputSource: SupportedInputSource;
+  audioInputDevices: AudioInputOption[];
+  inputDeviceId: string;
   enableNoiseSuppression: boolean | null;
   enableEchoCancellation: boolean | null;
   serverDebugFlag: boolean;
   muted: boolean;
   isSpeaker: boolean;
+  isListener: boolean;
   xrDialogNode: React.ReactNode;
   onModelChange: (agent: AgentCapabilities | null) => void;
   onTargetLangChange: (lang: string) => void;
@@ -48,9 +50,9 @@ type StreamingSpeakerPanelProps = {
   onExpressiveChange: (expressive: boolean) => void;
   onOutputDeviceChange: (deviceId: string) => void;
   onGainChange: (gain: number) => void;
-  onInstallingVirtualMicChange: (installing: boolean) => void;
   onSetDynamicConfig: (partialConfig: PartialDynamicConfig) => Promise<void>;
   onInputSourceChange: (source: SupportedInputSource) => void;
+  onInputDeviceChange: (deviceId: string) => void;
   onNoiseSuppressionChange: (enabled: boolean) => void;
   onEchoCancellationChange: (enabled: boolean) => void;
   onServerDebugChange: (enabled: boolean) => void;
@@ -75,8 +77,6 @@ export function StreamingSpeakerPanel(props: StreamingSpeakerPanelProps) {
         gain={props.gain}
         audioOutputDevices={props.audioOutputDevices}
         translationOutputDeviceId={props.translationOutputDeviceId}
-        blackHoleInstalled={props.blackHoleInstalled}
-        installingVirtualMic={props.installingVirtualMic}
         bufferedSpeechPlayer={props.bufferedSpeechPlayer}
         onModelChange={props.onModelChange}
         onTargetLangChange={props.onTargetLangChange}
@@ -84,7 +84,6 @@ export function StreamingSpeakerPanel(props: StreamingSpeakerPanelProps) {
         onExpressiveChange={props.onExpressiveChange}
         onOutputDeviceChange={props.onOutputDeviceChange}
         onGainChange={props.onGainChange}
-        onInstallingVirtualMicChange={props.onInstallingVirtualMicChange}
         onSetDynamicConfig={props.onSetDynamicConfig}
       />
       <InputStreamSection
@@ -96,6 +95,8 @@ export function StreamingSpeakerPanel(props: StreamingSpeakerPanelProps) {
         serverExceptions={props.serverExceptions}
         hasMaxSpeakers={props.hasMaxSpeakers}
         inputSource={props.inputSource}
+        audioInputDevices={props.audioInputDevices}
+        inputDeviceId={props.inputDeviceId}
         enableNoiseSuppression={props.enableNoiseSuppression}
         enableEchoCancellation={props.enableEchoCancellation}
         serverDebugFlag={props.serverDebugFlag}
@@ -105,6 +106,7 @@ export function StreamingSpeakerPanel(props: StreamingSpeakerPanelProps) {
         gain={props.gain}
         xrDialogNode={props.xrDialogNode}
         onInputSourceChange={props.onInputSourceChange}
+        onInputDeviceChange={props.onInputDeviceChange}
         onNoiseSuppressionChange={props.onNoiseSuppressionChange}
         onEchoCancellationChange={props.onEchoCancellationChange}
         onServerDebugChange={props.onServerDebugChange}
@@ -149,16 +151,16 @@ export function StreamingInterfaceHeader({
         <img
           src={seamlessLogoUrl}
           className="header-icon-sra"
-          alt="Seamless Translation Logo"
+          alt={ru.appTitle}
           height={24}
           width={24}
         />
         <Typography variant="h1" sx={{color: '#65676B'}}>
-          Seamless Translation
+          {ru.appTitle}
         </Typography>
       </div>
       <Typography variant="body2" sx={{color: '#65676B'}}>
-        Translation → virtual mic → Zoom/Meet
+        {ru.appSubtitle}
       </Typography>
 
       <Stack spacing="22px" direction="column">

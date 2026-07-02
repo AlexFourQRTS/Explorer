@@ -5,6 +5,9 @@ import Alert from '@mui/material/Alert';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import InputLabel from '@mui/material/InputLabel';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
@@ -18,11 +21,13 @@ import {
   SUPPORTED_INPUT_SOURCES,
   SupportedInputSource,
 } from '../types/StreamingTypes';
+import {AudioInputOption} from '../audioInputDevices';
 import {
   AUDIO_STREAM_DEFAULTS,
   STREAMING_BUTTON_LABELS,
   TOTAL_ACTIVE_TRANSCODER_WARNING_THRESHOLD,
 } from './streamingInterfaceConstants';
+import {ru} from '../i18n/ru';
 
 type InputStreamSectionProps = {
   streamFixedConfigOptionsDisabled: boolean;
@@ -33,6 +38,8 @@ type InputStreamSectionProps = {
   serverExceptions: Array<ServerExceptionData>;
   hasMaxSpeakers: boolean;
   inputSource: SupportedInputSource;
+  audioInputDevices: AudioInputOption[];
+  inputDeviceId: string;
   enableNoiseSuppression: boolean | null;
   enableEchoCancellation: boolean | null;
   serverDebugFlag: boolean;
@@ -42,6 +49,7 @@ type InputStreamSectionProps = {
   gain: number;
   xrDialogNode: React.ReactNode;
   onInputSourceChange: (source: SupportedInputSource) => void;
+  onInputDeviceChange: (deviceId: string) => void;
   onNoiseSuppressionChange: (enabled: boolean) => void;
   onEchoCancellationChange: (enabled: boolean) => void;
   onServerDebugChange: (enabled: boolean) => void;
@@ -59,6 +67,8 @@ export function InputStreamSection({
   serverExceptions,
   hasMaxSpeakers,
   inputSource,
+  audioInputDevices,
+  inputDeviceId,
   enableNoiseSuppression,
   enableEchoCancellation,
   serverDebugFlag,
@@ -68,6 +78,7 @@ export function InputStreamSection({
   gain,
   xrDialogNode,
   onInputSourceChange,
+  onInputDeviceChange,
   onNoiseSuppressionChange,
   onEchoCancellationChange,
   onServerDebugChange,
@@ -79,8 +90,8 @@ export function InputStreamSection({
     <>
       <Stack direction="row" spacing={2} justifyContent="space-between">
         <Box sx={{flex: 1}}>
-          <FormControl disabled={streamFixedConfigOptionsDisabled}>
-            <FormLabel id="input-source-radio-group-label">Input Source</FormLabel>
+          <FormControl disabled={streamFixedConfigOptionsDisabled} fullWidth>
+            <FormLabel id="input-source-radio-group-label">{ru.inputSource}</FormLabel>
             <RadioGroup
               aria-labelledby="input-source-radio-group-label"
               value={inputSource}
@@ -98,11 +109,33 @@ export function InputStreamSection({
               ))}
             </RadioGroup>
           </FormControl>
+
+          {inputSource === 'userMedia' && (
+            <FormControl
+              fullWidth
+              sx={{mt: 2, minWidth: '14em'}}
+              disabled={streamFixedConfigOptionsDisabled}>
+              <InputLabel id="input-mic-label">{ru.audioInputDevice}</InputLabel>
+              <Select
+                labelId="input-mic-label"
+                label={ru.audioInputDevice}
+                value={inputDeviceId}
+                onChange={(e: SelectChangeEvent) =>
+                  onInputDeviceChange(e.target.value)
+                }>
+                {audioInputDevices.map((device) => (
+                  <MenuItem value={device.deviceId} key={device.deviceId}>
+                    {device.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Box>
 
         <Box sx={{flex: 1, flexGrow: 2}}>
           <FormControl disabled={streamFixedConfigOptionsDisabled}>
-            <FormLabel>Options</FormLabel>
+            <FormLabel>{ru.options}</FormLabel>
             <FormControlLabel
               control={
                 <Checkbox
@@ -115,7 +148,7 @@ export function InputStreamSection({
                   }
                 />
               }
-              label="Noise Suppression"
+              label={ru.noiseSuppression}
             />
             <FormControlLabel
               control={
@@ -129,7 +162,7 @@ export function InputStreamSection({
                   }
                 />
               }
-              label="Echo Cancellation (not recommended)"
+              label={ru.echoCancellation}
             />
             <FormControlLabel
               control={
@@ -138,7 +171,7 @@ export function InputStreamSection({
                   onChange={(event) => onServerDebugChange(event.target.checked)}
                 />
               }
-              label="Enable Server Debugging"
+              label={ru.serverDebug}
             />
           </FormControl>
         </Box>
@@ -150,16 +183,12 @@ export function InputStreamSection({
         !enableEchoCancellation &&
         gain !== 0 && (
           <Alert severity="warning" icon={<HeadphonesIcon />}>
-            Headphones required to prevent feedback.
+            {ru.headphonesWarning}
           </Alert>
         )}
 
       {isSpeaker && enableEchoCancellation && (
-        <Alert severity="warning">
-          We don&apos;t recommend using echo cancellation as it may distort the
-          input audio. If possible, use headphones and disable echo cancellation
-          instead.
-        </Alert>
+        <Alert severity="warning">{ru.echoWarning}</Alert>
       )}
 
       <Stack direction="row" spacing={2}>
@@ -186,7 +215,7 @@ export function InputStreamSection({
 
         <Button
           variant="contained"
-          aria-label={muted ? 'Unmute' : 'Mute'}
+          aria-label={muted ? 'Включить микрофон' : 'Выключить микрофон'}
           color={muted ? 'info' : 'primary'}
           onClick={onMutedToggle}
           sx={{borderRadius: 100, paddingX: 0, minWidth: '36px'}}>
@@ -201,33 +230,24 @@ export function InputStreamSection({
       </Stack>
 
       {serverExceptions.length > 0 && (
-        <Alert severity="error">
-          The server encountered an exception. See the browser console for
-          details. You may need to refresh the page to continue using the app.
-        </Alert>
+        <Alert severity="error">{ru.serverException}</Alert>
       )}
 
       {serverState != null && hasMaxSpeakers && (
-        <Alert severity="error">
-          Maximum number of speakers reached. Please try again at a later time.
-        </Alert>
+        <Alert severity="error">{ru.maxSpeakers}</Alert>
       )}
 
       {serverState != null &&
         serverState.totalActiveTranscoders >=
           TOTAL_ACTIVE_TRANSCODER_WARNING_THRESHOLD && (
           <Alert severity="warning">
-            {`The server currently has ${serverState.totalActiveTranscoders} active streaming sessions. Performance may be degraded.`}
+            {ru.serverLoadWarning(serverState.totalActiveTranscoders)}
           </Alert>
         )}
 
       {serverState?.serverLock != null &&
         serverState.serverLock.clientID !== clientID && (
-          <Alert severity="warning">
-            The server is currently locked. Priority will be given to that
-            client when they are streaming, and your streaming session may be
-            halted abruptly.
-          </Alert>
+          <Alert severity="warning">{ru.serverLocked}</Alert>
         )}
     </>
   );
