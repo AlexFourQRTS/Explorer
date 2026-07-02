@@ -5,9 +5,11 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "setup:seamless": "bash scripts/setup-seamless.sh",
-    "install:blackhole": "bash scripts/install-blackhole.sh",
-    "dev": "NODE_ENV=development electron .",
+    "setup:seamless": "node scripts/run-setup.js",
+    "setup:seamless:win": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/setup-seamless.ps1",
+    "setup:seamless:mac": "bash scripts/setup-seamless.sh",
+    "install:virtual-mic": "node scripts/run-virtual-mic-install.js",
+    "dev": "electron .",
     "build": "electron-builder"
   },
   "repository": {
@@ -40,16 +42,7 @@
       "!*.md",
       "!data.json"
     ],
-    "extraResources": [
-      {
-        "from": "data.json",
-        "to": "data.json"
-      },
-      {
-        "from": "category.json",
-        "to": "category.json"
-      }
-    ],
+    "extraResources": [],
     "win": {
       "target": "nsis",
       "icon": "icon.png"

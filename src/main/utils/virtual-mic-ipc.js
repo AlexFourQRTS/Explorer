@@ -9,7 +9,15 @@ function getProjectRoot() {
 function runScript(scriptName) {
   const scriptPath = path.join(getProjectRoot(), 'scripts', scriptName);
   return new Promise((resolve, reject) => {
-    const child = spawn('bash', [scriptPath], { stdio: ['ignore', 'pipe', 'pipe'] });
+    const isWindows = process.platform === 'win32';
+    const child = isWindows
+      ? spawn(
+          'powershell',
+          ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', scriptPath],
+          { stdio: ['ignore', 'pipe', 'pipe'] },
+        )
+      : spawn('bash', [scriptPath], { stdio: ['ignore', 'pipe', 'pipe'] });
+
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', (chunk) => {
@@ -28,10 +36,18 @@ function runScript(scriptName) {
   });
 }
 
+function getCheckScript() {
+  return process.platform === 'win32' ? 'check-virtual-mic.ps1' : 'check-blackhole.sh';
+}
+
+function getInstallScript() {
+  return process.platform === 'win32' ? 'install-virtual-mic.ps1' : 'install-blackhole.sh';
+}
+
 function registerVirtualMicIpc() {
   ipcMain.handle('virtual-mic-check', async () => {
     try {
-      const result = await runScript('check-blackhole.sh');
+      const result = await runScript(getCheckScript());
       return { installed: result === 'installed' };
     } catch {
       return { installed: false };
@@ -39,7 +55,7 @@ function registerVirtualMicIpc() {
   });
 
   ipcMain.handle('virtual-mic-install', async () => {
-    await runScript('install-blackhole.sh');
+    await runScript(getInstallScript());
     return { ok: true };
   });
 }

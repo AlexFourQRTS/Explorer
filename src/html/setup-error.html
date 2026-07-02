@@ -21,6 +21,27 @@
   <p>Run from <code>Explorer/</code>:</p>
   <pre><code>npm run setup:seamless
 npm run start</code></pre>
-  <p>Place model files in <code>Model/</code> and install BlackHole for virtual microphone output in Zoom/Meet.</p>
+  <p id="wsl-hint"></p>
+  <p>Place model files in <code>Model/</code>:</p>
+  <ul>
+    <li><code>seamless_streaming_unity.pt</code></li>
+    <li><code>seamless_streaming_monotonic_decoder.pt</code></li>
+  </ul>
+  <p id="virtual-mic-hint"></p>
+  <script>
+    const wslHint = document.getElementById('wsl-hint');
+    if (navigator.userAgent.includes('Windows')) {
+      wslHint.innerHTML =
+        'On Windows the Python backend runs in <strong>WSL2</strong> (fairseq2 has no native Windows build). Install Ubuntu if needed: <code>wsl --install -d Ubuntu</code>';
+    }
+    const hint = document.getElementById('virtual-mic-hint');
+    if (navigator.userAgent.includes('Windows')) {
+      hint.textContent =
+        'Virtual mic (Zoom): install VB-Audio Virtual Cable → CABLE Input as output in STREEM, CABLE Output as mic in Zoom.';
+    } else {
+      hint.textContent =
+        'Virtual mic (Zoom): install BlackHole → pick it as translation output, then as mic in Zoom.';
+    }
+  </script>
 </body>
 </html>

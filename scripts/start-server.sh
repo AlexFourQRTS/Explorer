@@ -1,18 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PROJECT_ROOT="${STREEM_PROJECT_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 SERVER_DIR="$PROJECT_ROOT/seamless-streaming/seamless_server"
 CONDA_ENV_NAME="streem-seamless"
 MINIFORGE_DIR="${MINIFORGE_DIR:-$HOME/miniforge3}"
 PORT="${STREEM_PORT:-7860}"
+
+setup_library_path() {
+  local py_site="$MINIFORGE_DIR/envs/$CONDA_ENV_NAME/lib/python3.10/site-packages"
+  local -a extra_paths=()
+
+  if [[ -d "$py_site/nvidia" ]]; then
+    while IFS= read -r libdir; do
+      extra_paths+=("$libdir")
+    done < <(find "$py_site/nvidia" -type d -name lib 2>/dev/null | sort -u)
+  fi
+
+  if [[ -d "$py_site/fairseq2n/lib" ]]; then
+    extra_paths+=("$py_site/fairseq2n/lib")
+  fi
+
+  if ((${#extra_paths[@]})); then
+    local joined
+    joined="$(IFS=:; echo "${extra_paths[*]}")"
+    export LD_LIBRARY_PATH="${joined}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+  fi
+}
 
 if [[ ! -f "$PROJECT_ROOT/Model/seamless_streaming_unity.pt" ]]; then
   echo "Missing Model/seamless_streaming_unity.pt"
   exit 1
 fi
 
-bash "$PROJECT_ROOT/scripts/prepare-assets.sh"
+if [[ "${STREEM_SKIP_PREPARE_ASSETS:-0}" == "1" ]]; then
+  echo "Skipping prepare-assets (already run on Windows host)."
+elif command -v node >/dev/null 2>&1; then
+  node "$PROJECT_ROOT/scripts/prepare-assets.js"
+else
+  echo "Node.js not in WSL; using asset cards prepared on Windows host."
+fi
 
 export FAIRSEQ2_USER_ASSET_DIR="$PROJECT_ROOT/config/fairseq2/generated"
 export STREEM_MODEL_DIR="$PROJECT_ROOT/Model"
@@ -39,9 +66,12 @@ activate_conda() {
   exit 1
 }
 
-bash "$PROJECT_ROOT/scripts/patch-fairseq2n-macos.sh"
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  bash "$PROJECT_ROOT/scripts/patch-fairseq2n-macos.sh"
+fi
 
 activate_conda
+setup_library_path
 
 UVICORN="$MINIFORGE_DIR/envs/$CONDA_ENV_NAME/bin/uvicorn"
 if [[ ! -x "$UVICORN" ]]; then
@@ -64,5 +94,5 @@ if [[ "${STREEM_FREE_PORT:-1}" == "1" ]]; then
 fi
 
 cd "$SERVER_DIR"
-echo "STREEM Seamless server → http://127.0.0.1:${PORT}"
+echo "STREEM Seamless server -> http://127.0.0.1:${PORT}"
 exec "$UVICORN" app_pubsub:app --host 127.0.0.1 --port "$PORT"

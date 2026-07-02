@@ -1,14 +1,25 @@
-# Minimal deps for seamless_server (app_pubsub.py). No Flask/gevent/whisper.
-git+https://github.com/facebookresearch/seamless_communication.git
-g2p_en==2.1.0
+# STREEM seamless_server runtime deps (checked on PyPI 2026-07-01).
+# seamless_communication + fairseq2 + torch are installed separately in setup-seamless.sh.
+
+# seamless_server direct imports (app_pubsub.py, simuleval_transcoder.py)
 colorlog==6.7.0
 python-socketio==5.9.0
 uvicorn[standard]==0.23.2
 starlette==0.32.0.post1
 soundfile==0.11.0
 numpy>=1.24.4,<2.0
+simuleval==1.1.4
+g2p-en==2.1.0
 
+# seamless_communication streaming agents (setup.py install_requires subset)
+sonar-space==0.2.*
+fire
+librosa
+scipy
+tqdm
 
-
-
-
+# NOT listed here (exist on PyPI but not imported by seamless_server / streaming agents):
+#   datasets==2.18.0
+#   openai-whisper
+# NOT on PyPI as a wheel for Windows; installed from GitHub in setup-seamless.sh:
+#   seamless_communication

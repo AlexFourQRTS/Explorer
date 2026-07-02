@@ -16,6 +16,6 @@ min_starting_wait_w2vbert: 192
 config_yaml: cfg_fbank_u2t.yaml
 upstream_idx: 1
 detokenize_only: True
-device: cpu
+device: cuda
 max_len_a: 0
 max_len_b: 1000

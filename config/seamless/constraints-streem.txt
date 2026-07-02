@@ -1,0 +1,5 @@
+# Prevent pip from upgrading the Meta CUDA 11.8 stack when installing sonar-space etc.
+torch==2.2.2
+torchaudio==2.2.2
+fairseq2==0.2.1
+fairseq2n==0.2.1
